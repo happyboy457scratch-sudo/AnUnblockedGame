@@ -36,6 +36,36 @@ body {
   box-shadow: 0 8px 24px rgba(2, 6, 23, 0.4);
 }
 
+#home-menu {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, calc(100vw - 24px));
+  text-align: center;
+  z-index: 6;
+}
+
+.game-title {
+  margin: 4px 0 16px;
+  letter-spacing: 0.12em;
+  font-size: clamp(1.6rem, 4.2vw, 2.5rem);
+}
+
+.menu-buttons {
+  display: grid;
+  gap: 10px;
+}
+
+.menu-buttons button {
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #2563eb, #22c55e);
+  color: #f8fafc;
+  font-weight: 700;
+  padding: 10px;
+  cursor: pointer;
+}
+
 #hud {
   top: 12px;
   left: 12px;
@@ -186,6 +216,15 @@ body {
   color: #f8fafc;
   font-size: 1.1rem;
   height: 46px;
+}
+
+#control-popup {
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(340px, calc(100vw - 24px));
+  z-index: 7;
+  text-align: center;
 }
 
 @media (max-width: 760px) {
