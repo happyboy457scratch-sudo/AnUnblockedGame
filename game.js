@@ -148,19 +148,99 @@ function buildEnvironment(polyMode) {
 }
 
 const playerCar = new THREE.Group();
-const carBody = new THREE.Mesh(
-  new THREE.BoxGeometry(3.2, 1.2, 5.6),
-  new THREE.MeshStandardMaterial({ color: new THREE.Color(elements.color.value), metalness: 0.2, roughness: 0.5 })
-);
-carBody.position.y = 1;
-playerCar.add(carBody);
+const bodyMaterial = new THREE.MeshStandardMaterial({
+  color: new THREE.Color(elements.color.value),
+  metalness: 0.35,
+  roughness: 0.42,
+});
+const darkMaterial = new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.2, roughness: 0.45 });
+const glassMaterial = new THREE.MeshStandardMaterial({
+  color: 0x88bdf8,
+  metalness: 0.1,
+  roughness: 0.05,
+  transparent: true,
+  opacity: 0.8,
+});
 
-const roof = new THREE.Mesh(
-  new THREE.BoxGeometry(2.4, 0.8, 2.4),
-  new THREE.MeshStandardMaterial({ color: 0x111827 })
-);
-roof.position.set(0, 1.8, -0.25);
-playerCar.add(roof);
+const lowerBody = new THREE.Mesh(new THREE.BoxGeometry(3.3, 1, 6), bodyMaterial);
+lowerBody.position.y = 0.95;
+playerCar.add(lowerBody);
+
+const hood = new THREE.Mesh(new THREE.BoxGeometry(3, 0.45, 1.8), bodyMaterial);
+hood.position.set(0, 1.35, 2.1);
+playerCar.add(hood);
+
+const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.85, 2.5), bodyMaterial);
+cabin.position.set(0, 1.8, -0.1);
+playerCar.add(cabin);
+
+const windshield = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.55, 1.15), glassMaterial);
+windshield.position.set(0, 1.95, 0.75);
+playerCar.add(windshield);
+
+const rearWindow = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.45, 0.95), glassMaterial);
+rearWindow.position.set(0, 1.95, -1.25);
+playerCar.add(rearWindow);
+
+const bumperFront = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.35, 0.35), darkMaterial);
+bumperFront.position.set(0, 0.6, 3.02);
+playerCar.add(bumperFront);
+
+const bumperRear = bumperFront.clone();
+bumperRear.position.z = -3.02;
+playerCar.add(bumperRear);
+
+const headlightGeo = new THREE.BoxGeometry(0.45, 0.2, 0.15);
+const headlightMaterial = new THREE.MeshStandardMaterial({
+  color: 0xf8fafc,
+  emissive: 0xe2e8f0,
+  emissiveIntensity: 0.25,
+});
+const headlightL = new THREE.Mesh(headlightGeo, headlightMaterial);
+headlightL.position.set(-1.05, 1.02, 3.1);
+playerCar.add(headlightL);
+const headlightR = headlightL.clone();
+headlightR.position.x = 1.05;
+playerCar.add(headlightR);
+
+const taillightGeo = new THREE.BoxGeometry(0.42, 0.2, 0.12);
+const taillightMaterial = new THREE.MeshStandardMaterial({
+  color: 0xef4444,
+  emissive: 0x7f1d1d,
+  emissiveIntensity: 0.5,
+});
+const taillightL = new THREE.Mesh(taillightGeo, taillightMaterial);
+taillightL.position.set(-1.02, 1, -3.08);
+playerCar.add(taillightL);
+const taillightR = taillightL.clone();
+taillightR.position.x = 1.02;
+playerCar.add(taillightR);
+
+const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2, 0.14, 0.55), darkMaterial);
+spoiler.position.set(0, 2.22, -2.2);
+playerCar.add(spoiler);
+
+const wheelGeo = new THREE.CylinderGeometry(0.56, 0.56, 0.72, 20);
+const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x0b1120, roughness: 0.8, metalness: 0.1 });
+const rimMaterial = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.35, metalness: 0.75 });
+const wheelOffsets = [
+  [-1.45, 0.55, 1.95],
+  [1.45, 0.55, 1.95],
+  [-1.45, 0.55, -1.95],
+  [1.45, 0.55, -1.95],
+];
+
+wheelOffsets.forEach(([x, y, z]) => {
+  const wheel = new THREE.Mesh(wheelGeo, wheelMaterial);
+  wheel.rotation.z = Math.PI / 2;
+  wheel.position.set(x, y, z);
+  playerCar.add(wheel);
+
+  const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.74, 16), rimMaterial);
+  rim.rotation.z = Math.PI / 2;
+  rim.position.set(x, y, z);
+  playerCar.add(rim);
+});
 
 playerCar.position.set(0, 0, 0);
 scene.add(playerCar);
@@ -403,7 +483,7 @@ bindHold(elements.mobileRight, "right");
 elements.applySettings.addEventListener("click", applySettings);
 
 elements.color.addEventListener("input", () => {
-  carBody.material.color.set(elements.color.value);
+  bodyMaterial.color.set(elements.color.value);
 });
 
 elements.shopButtons.forEach((button) => {
