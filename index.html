@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3D Street Sprint</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div id="game-shell">
+      <canvas id="game-canvas"></canvas>
+
+      <div id="hud" class="panel">
+        <div class="hud-top">
+          <h1>3D Street Sprint</h1>
+          <button id="mobile-toggle" class="small-btn" title="Toggle mobile controls">📱</button>
+        </div>
+        <div class="stats-grid">
+          <div><span class="label">Coins</span><span id="coins">0</span></div>
+          <div><span class="label">Speed</span><span id="speed">0</span></div>
+          <div><span class="label">Time</span><span id="time-left">60</span></div>
+          <div><span class="label">Position</span><span id="position">1 / 1</span></div>
+        </div>
+        <p class="help">Controls: A/D or ←/→ move lanes · W or ↑ accelerate</p>
+      </div>
+
+      <div id="garage" class="panel">
+        <h2>Garage & Setup</h2>
+        <label>
+          Car color
+          <input type="color" id="car-color" value="#2f80ed" />
+        </label>
+
+        <label>
+          Bot level
+          <select id="difficulty">
+            <option value="easy">Easy Bots</option>
+            <option value="medium">Medium Bots</option>
+            <option value="hard">Hard Bots</option>
+          </select>
+        </label>
+
+        <button id="start-race">Start Race</button>
+      </div>
+
+      <div id="settings" class="panel">
+        <h2>Settings</h2>
+        <label>
+          Poly mode
+          <select id="poly-mode">
+            <option value="low">Low Poly</option>
+            <option value="high">High Poly</option>
+          </select>
+        </label>
+
+        <label>
+          Graphics quality
+          <select id="graphics-quality">
+            <option value="low">Low Graphics</option>
+            <option value="high">High Graphics</option>
+          </select>
+        </label>
+
+        <label>
+          Resolution
+          <select id="resolution"></select>
+        </label>
+
+        <button id="apply-settings">Apply Settings</button>
+      </div>
+
+      <div id="shop" class="panel">
+        <h2>Shop (1-use Powerups)</h2>
+        <div class="shop-item">
+          <div>
+            <strong>Nitro Burst</strong>
+            <p>+40 top speed for 8s in your next race.</p>
+          </div>
+          <button data-item="nitro" data-cost="40">Buy (40)</button>
+        </div>
+        <div class="shop-item">
+          <div>
+            <strong>Turbo Tires</strong>
+            <p>+25 acceleration for 1 race.</p>
+          </div>
+          <button data-item="turbo" data-cost="55">Buy (55)</button>
+        </div>
+        <div class="shop-item">
+          <div>
+            <strong>Coin Magnet</strong>
+            <p>+60% coins from one race.</p>
+          </div>
+          <button data-item="magnet" data-cost="30">Buy (30)</button>
+        </div>
+        <div id="inventory">Inventory: Nitro 0 · Turbo 0 · Magnet 0</div>
+      </div>
+
+      <div id="race-result" class="panel hidden">
+        <h2 id="result-title">Race Complete!</h2>
+        <p id="result-body"></p>
+      </div>
+
+      <div id="mobile-controls" class="panel hidden">
+        <button id="mobile-left">◀</button>
+        <button id="mobile-boost">▲</button>
+        <button id="mobile-right">▶</button>
+      </div>
+    </div>
+
+    <script type="module" src="game.js"></script>
+  </body>
+</html>
