@@ -10,6 +10,16 @@
     <div id="game-shell">
       <canvas id="game-canvas"></canvas>
 
+      <div id="home-menu" class="panel">
+        <h1 class="game-title">3D STREET SPRINT</h1>
+        <div class="menu-buttons">
+          <button id="menu-garage">Garage</button>
+          <button id="menu-settings">Settings</button>
+          <button id="menu-start">Start Race</button>
+          <button id="menu-shop">Shop</button>
+        </div>
+      </div>
+
       <div id="hud" class="panel">
         <div class="hud-top">
           <h1>3D Street Sprint</h1>
@@ -24,7 +34,7 @@
         <p class="help">Controls: A/D or ←/→ move lanes · W or ↑ accelerate</p>
       </div>
 
-      <div id="garage" class="panel">
+      <div id="garage" class="panel hidden">
         <h2>Garage & Setup</h2>
         <label>
           Car color
@@ -43,7 +53,7 @@
         <button id="start-race">Start Race</button>
       </div>
 
-      <div id="settings" class="panel">
+      <div id="settings" class="panel hidden">
         <h2>Settings</h2>
         <label>
           Poly mode
@@ -69,7 +79,7 @@
         <button id="apply-settings">Apply Settings</button>
       </div>
 
-      <div id="shop" class="panel">
+      <div id="shop" class="panel hidden">
         <h2>Shop (1-use Powerups)</h2>
         <div class="shop-item">
           <div>
@@ -104,6 +114,15 @@
         <button id="mobile-left">◀</button>
         <button id="mobile-boost">▲</button>
         <button id="mobile-right">▶</button>
+      </div>
+
+      <div id="control-popup" class="panel hidden">
+        <h2>Choose Controls</h2>
+        <p>Pick your control scheme before the race starts.</p>
+        <div class="menu-buttons">
+          <button id="choose-mobile">Mobile</button>
+          <button id="choose-keyboard">Keyboard</button>
+        </div>
       </div>
     </div>
 
