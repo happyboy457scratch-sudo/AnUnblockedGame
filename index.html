@@ -32,10 +32,14 @@
           <div><span class="label">Position</span><span id="position">1 / 1</span></div>
         </div>
         <p class="help">Controls: A/D or ←/→ move lanes · W or ↑ accelerate</p>
+        <button id="use-nitro" class="small-btn hidden">Use Nitro</button>
       </div>
 
       <div id="garage" class="panel hidden">
-        <h2>Garage & Setup</h2>
+        <div class="panel-head">
+          <h2>Garage & Setup</h2>
+          <button id="exit-garage" class="small-btn">✕</button>
+        </div>
         <label>
           Car color
           <input type="color" id="car-color" value="#2f80ed" />
@@ -54,7 +58,10 @@
       </div>
 
       <div id="settings" class="panel hidden">
-        <h2>Settings</h2>
+        <div class="panel-head">
+          <h2>Settings</h2>
+          <button id="exit-settings" class="small-btn">✕</button>
+        </div>
         <label>
           Poly mode
           <select id="poly-mode">
@@ -80,7 +87,10 @@
       </div>
 
       <div id="shop" class="panel hidden">
-        <h2>Shop (1-use Powerups)</h2>
+        <div class="panel-head">
+          <h2>Shop (1-use Powerups)</h2>
+          <button id="exit-shop" class="small-btn">✕</button>
+        </div>
         <div class="shop-item">
           <div>
             <strong>Nitro Burst</strong>
@@ -119,6 +129,7 @@
       <div id="control-popup" class="panel hidden">
         <h2>Choose Controls</h2>
         <p>Pick your control scheme before the race starts.</p>
+        <div id="pre-race-options" class="pre-race-options"></div>
         <div class="menu-buttons">
           <button id="choose-mobile">Mobile</button>
           <button id="choose-keyboard">Keyboard</button>
