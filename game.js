@@ -30,6 +30,11 @@ const state = {
 
 const elements = {
   canvas: document.getElementById("game-canvas"),
+  homeMenu: document.getElementById("home-menu"),
+  menuGarage: document.getElementById("menu-garage"),
+  menuSettings: document.getElementById("menu-settings"),
+  menuStart: document.getElementById("menu-start"),
+  menuShop: document.getElementById("menu-shop"),
   coins: document.getElementById("coins"),
   speed: document.getElementById("speed"),
   timeLeft: document.getElementById("time-left"),
@@ -45,6 +50,9 @@ const elements = {
   mobileLeft: document.getElementById("mobile-left"),
   mobileBoost: document.getElementById("mobile-boost"),
   mobileRight: document.getElementById("mobile-right"),
+  controlPopup: document.getElementById("control-popup"),
+  chooseMobile: document.getElementById("choose-mobile"),
+  chooseKeyboard: document.getElementById("choose-keyboard"),
   polyMode: document.getElementById("poly-mode"),
   graphicsQuality: document.getElementById("graphics-quality"),
   resolution: document.getElementById("resolution"),
@@ -281,6 +289,23 @@ function updateHud(position = "1 / 1") {
   elements.inventory.textContent = `Inventory: Nitro ${state.inventory.nitro} · Turbo ${state.inventory.turbo} · Magnet ${state.inventory.magnet}`;
 }
 
+function showMenuPanel(target) {
+  const ids = ["garage", "settings", "shop"];
+  ids.forEach((id) => document.getElementById(id).classList.toggle("hidden", id !== target));
+}
+
+function openControlPopup() {
+  elements.controlPopup.classList.remove("hidden");
+}
+
+function closeControlPopup() {
+  elements.controlPopup.classList.add("hidden");
+}
+
+function hideHomeMenu() {
+  elements.homeMenu.classList.add("hidden");
+}
+
 function populateResolutionOptions() {
   const presets = [
     [800, 600],
@@ -475,12 +500,39 @@ window.addEventListener("keyup", (event) => {
   if (event.key === "ArrowUp" || event.key.toLowerCase() === "w") controls.accel = false;
 });
 
-elements.startRace.addEventListener("click", startRace);
+elements.startRace.addEventListener("click", openControlPopup);
 elements.mobileToggle.addEventListener("click", () => setMobileControls(!mobileEnabled));
 bindHold(elements.mobileLeft, "left");
 bindHold(elements.mobileBoost, "accel");
 bindHold(elements.mobileRight, "right");
 elements.applySettings.addEventListener("click", applySettings);
+
+elements.menuGarage.addEventListener("click", () => {
+  hideHomeMenu();
+  showMenuPanel("garage");
+});
+elements.menuSettings.addEventListener("click", () => {
+  hideHomeMenu();
+  showMenuPanel("settings");
+});
+elements.menuShop.addEventListener("click", () => {
+  hideHomeMenu();
+  showMenuPanel("shop");
+});
+elements.menuStart.addEventListener("click", () => {
+  hideHomeMenu();
+  openControlPopup();
+});
+elements.chooseMobile.addEventListener("click", () => {
+  setMobileControls(true);
+  closeControlPopup();
+  startRace();
+});
+elements.chooseKeyboard.addEventListener("click", () => {
+  setMobileControls(false);
+  closeControlPopup();
+  startRace();
+});
 
 elements.color.addEventListener("input", () => {
   bodyMaterial.color.set(elements.color.value);
