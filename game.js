@@ -20,6 +20,7 @@ const state = {
   laneTarget: 1,
   activePowerups: [],
   usedThisRace: { nitro: false, turbo: false, magnet: false },
+  preRaceChoices: { turbo: false, magnet: false },
   settings: {
     polyMode: "low",
     graphicsQuality: "low",
@@ -42,6 +43,11 @@ const elements = {
   color: document.getElementById("car-color"),
   difficulty: document.getElementById("difficulty"),
   startRace: document.getElementById("start-race"),
+  useNitro: document.getElementById("use-nitro"),
+  preRaceOptions: document.getElementById("pre-race-options"),
+  exitGarage: document.getElementById("exit-garage"),
+  exitSettings: document.getElementById("exit-settings"),
+  exitShop: document.getElementById("exit-shop"),
   result: document.getElementById("race-result"),
   resultTitle: document.getElementById("result-title"),
   resultBody: document.getElementById("result-body"),
@@ -155,100 +161,113 @@ function buildEnvironment(polyMode) {
   }
 }
 
-const playerCar = new THREE.Group();
-const bodyMaterial = new THREE.MeshStandardMaterial({
-  color: new THREE.Color(elements.color.value),
-  metalness: 0.35,
-  roughness: 0.42,
-});
-const darkMaterial = new THREE.MeshStandardMaterial({ color: 0x111827, metalness: 0.2, roughness: 0.45 });
-const glassMaterial = new THREE.MeshStandardMaterial({
-  color: 0x88bdf8,
-  metalness: 0.1,
-  roughness: 0.05,
-  transparent: true,
-  opacity: 0.8,
-});
+function createSportsCar(colorValue) {
+  const car = new THREE.Group();
+  const bodyMaterial = new THREE.MeshStandardMaterial({
+    color: new THREE.Color(colorValue),
+    metalness: 0.4,
+    roughness: 0.35,
+  });
+  car.userData.bodyMaterial = bodyMaterial;
 
-const lowerBody = new THREE.Mesh(new THREE.BoxGeometry(3.3, 1, 6), bodyMaterial);
-lowerBody.position.y = 0.95;
-playerCar.add(lowerBody);
+  const accentMaterial = new THREE.MeshStandardMaterial({ color: 0x0b1120, metalness: 0.35, roughness: 0.45 });
+  const glassMaterial = new THREE.MeshStandardMaterial({
+    color: 0x9cc7ff,
+    metalness: 0.12,
+    roughness: 0.05,
+    transparent: true,
+    opacity: 0.8,
+  });
 
-const hood = new THREE.Mesh(new THREE.BoxGeometry(3, 0.45, 1.8), bodyMaterial);
-hood.position.set(0, 1.35, 2.1);
-playerCar.add(hood);
+  const base = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.9, 6.2), bodyMaterial);
+  base.position.y = 0.9;
+  car.add(base);
 
-const cabin = new THREE.Mesh(new THREE.BoxGeometry(2.45, 0.85, 2.5), bodyMaterial);
-cabin.position.set(0, 1.8, -0.1);
-playerCar.add(cabin);
+  const frontSlope = new THREE.Mesh(new THREE.BoxGeometry(3.1, 0.42, 1.5), bodyMaterial);
+  frontSlope.position.set(0, 1.25, 2.25);
+  car.add(frontSlope);
 
-const windshield = new THREE.Mesh(new THREE.BoxGeometry(2.2, 0.55, 1.15), glassMaterial);
-windshield.position.set(0, 1.95, 0.75);
-playerCar.add(windshield);
+  const rearSlope = new THREE.Mesh(new THREE.BoxGeometry(3, 0.4, 1.2), bodyMaterial);
+  rearSlope.position.set(0, 1.2, -2.3);
+  car.add(rearSlope);
 
-const rearWindow = new THREE.Mesh(new THREE.BoxGeometry(2.05, 0.45, 0.95), glassMaterial);
-rearWindow.position.set(0, 1.95, -1.25);
-playerCar.add(rearWindow);
+  const cockpit = new THREE.Mesh(new THREE.BoxGeometry(2.35, 0.82, 2.35), bodyMaterial);
+  cockpit.position.set(0, 1.7, -0.05);
+  car.add(cockpit);
 
-const bumperFront = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.35, 0.35), darkMaterial);
-bumperFront.position.set(0, 0.6, 3.02);
-playerCar.add(bumperFront);
+  const windshield = new THREE.Mesh(new THREE.BoxGeometry(2.1, 0.5, 1.2), glassMaterial);
+  windshield.position.set(0, 1.9, 0.6);
+  car.add(windshield);
 
-const bumperRear = bumperFront.clone();
-bumperRear.position.z = -3.02;
-playerCar.add(bumperRear);
+  const rearGlass = new THREE.Mesh(new THREE.BoxGeometry(2, 0.45, 0.9), glassMaterial);
+  rearGlass.position.set(0, 1.88, -1.15);
+  car.add(rearGlass);
 
-const headlightGeo = new THREE.BoxGeometry(0.45, 0.2, 0.15);
-const headlightMaterial = new THREE.MeshStandardMaterial({
-  color: 0xf8fafc,
-  emissive: 0xe2e8f0,
-  emissiveIntensity: 0.25,
-});
-const headlightL = new THREE.Mesh(headlightGeo, headlightMaterial);
-headlightL.position.set(-1.05, 1.02, 3.1);
-playerCar.add(headlightL);
-const headlightR = headlightL.clone();
-headlightR.position.x = 1.05;
-playerCar.add(headlightR);
+  const splitter = new THREE.Mesh(new THREE.BoxGeometry(3.25, 0.15, 0.35), accentMaterial);
+  splitter.position.set(0, 0.52, 3.08);
+  car.add(splitter);
 
-const taillightGeo = new THREE.BoxGeometry(0.42, 0.2, 0.12);
-const taillightMaterial = new THREE.MeshStandardMaterial({
-  color: 0xef4444,
-  emissive: 0x7f1d1d,
-  emissiveIntensity: 0.5,
-});
-const taillightL = new THREE.Mesh(taillightGeo, taillightMaterial);
-taillightL.position.set(-1.02, 1, -3.08);
-playerCar.add(taillightL);
-const taillightR = taillightL.clone();
-taillightR.position.x = 1.02;
-playerCar.add(taillightR);
+  const diffuser = splitter.clone();
+  diffuser.position.z = -3.08;
+  car.add(diffuser);
 
-const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2, 0.14, 0.55), darkMaterial);
-spoiler.position.set(0, 2.22, -2.2);
-playerCar.add(spoiler);
+  const spoiler = new THREE.Mesh(new THREE.BoxGeometry(2.15, 0.12, 0.6), accentMaterial);
+  spoiler.position.set(0, 2.2, -2.2);
+  car.add(spoiler);
 
-const wheelGeo = new THREE.CylinderGeometry(0.56, 0.56, 0.72, 20);
-const wheelMaterial = new THREE.MeshStandardMaterial({ color: 0x0b1120, roughness: 0.8, metalness: 0.1 });
-const rimMaterial = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.35, metalness: 0.75 });
-const wheelOffsets = [
-  [-1.45, 0.55, 1.95],
-  [1.45, 0.55, 1.95],
-  [-1.45, 0.55, -1.95],
-  [1.45, 0.55, -1.95],
-];
+  const spoilerLegL = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.25, 0.12), accentMaterial);
+  spoilerLegL.position.set(-0.7, 2.05, -2.2);
+  car.add(spoilerLegL);
+  const spoilerLegR = spoilerLegL.clone();
+  spoilerLegR.position.x = 0.7;
+  car.add(spoilerLegR);
 
-wheelOffsets.forEach(([x, y, z]) => {
-  const wheel = new THREE.Mesh(wheelGeo, wheelMaterial);
-  wheel.rotation.z = Math.PI / 2;
-  wheel.position.set(x, y, z);
-  playerCar.add(wheel);
+  const headlightGeo = new THREE.BoxGeometry(0.45, 0.16, 0.16);
+  const headlightMaterial = new THREE.MeshStandardMaterial({
+    color: 0xf8fafc,
+    emissive: 0xe2e8f0,
+    emissiveIntensity: 0.26,
+  });
+  const headlightL = new THREE.Mesh(headlightGeo, headlightMaterial);
+  headlightL.position.set(-1.05, 1, 3.16);
+  car.add(headlightL);
+  const headlightR = headlightL.clone();
+  headlightR.position.x = 1.05;
+  car.add(headlightR);
 
-  const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.74, 16), rimMaterial);
-  rim.rotation.z = Math.PI / 2;
-  rim.position.set(x, y, z);
-  playerCar.add(rim);
-});
+  const tailGeo = new THREE.BoxGeometry(0.42, 0.16, 0.12);
+  const tailMaterial = new THREE.MeshStandardMaterial({ color: 0xef4444, emissive: 0x7f1d1d, emissiveIntensity: 0.5 });
+  const tailL = new THREE.Mesh(tailGeo, tailMaterial);
+  tailL.position.set(-1, 0.95, -3.13);
+  car.add(tailL);
+  const tailR = tailL.clone();
+  tailR.position.x = 1;
+  car.add(tailR);
+
+  const wheelGeo = new THREE.CylinderGeometry(0.56, 0.56, 0.72, 20);
+  const tireMaterial = new THREE.MeshStandardMaterial({ color: 0x090f1a, roughness: 0.84, metalness: 0.06 });
+  const rimMaterial = new THREE.MeshStandardMaterial({ color: 0x94a3b8, roughness: 0.32, metalness: 0.8 });
+  const wheelOffsets = [
+    [-1.45, 0.55, 2.03],
+    [1.45, 0.55, 2.03],
+    [-1.45, 0.55, -2.03],
+    [1.45, 0.55, -2.03],
+  ];
+  wheelOffsets.forEach(([x, y, z]) => {
+    const tire = new THREE.Mesh(wheelGeo, tireMaterial);
+    tire.rotation.z = Math.PI / 2;
+    tire.position.set(x, y, z);
+    car.add(tire);
+    const rim = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.27, 0.74, 16), rimMaterial);
+    rim.rotation.z = Math.PI / 2;
+    rim.position.set(x, y, z);
+    car.add(rim);
+  });
+
+  return car;
+}
+
+const playerCar = createSportsCar(elements.color.value);
 
 playerCar.position.set(0, 0, 0);
 scene.add(playerCar);
@@ -256,14 +275,18 @@ scene.add(playerCar);
 const bots = [];
 const BOT_COLORS = [0xef4444, 0xf59e0b, 0x8b5cf6, 0x14b8a6, 0xf472b6];
 
+function hexFromInput(input) {
+  return Number.parseInt(input.replace("#", ""), 16);
+}
+
+function pickBotColor(playerHex) {
+  const available = BOT_COLORS.filter((color) => color !== playerHex);
+  return available[Math.floor(Math.random() * available.length)] ?? 0xef4444;
+}
+
 function createBot(index, speed) {
-  const bot = new THREE.Group();
-  const body = new THREE.Mesh(
-    new THREE.BoxGeometry(3, 1.1, 5.2),
-    new THREE.MeshStandardMaterial({ color: BOT_COLORS[index % BOT_COLORS.length] })
-  );
-  body.position.y = 1;
-  bot.add(body);
+  const playerHex = hexFromInput(elements.color.value);
+  const bot = createSportsCar(pickBotColor(playerHex));
   bot.position.set((index % 3 - 1) * LANE_WIDTH, 0, 18 + index * 16);
   bot.userData = { speed, distance: 0 };
   scene.add(bot);
@@ -287,6 +310,7 @@ function updateHud(position = "1 / 1") {
   elements.timeLeft.textContent = state.timeLeft.toFixed(1);
   elements.position.textContent = position;
   elements.inventory.textContent = `Inventory: Nitro ${state.inventory.nitro} · Turbo ${state.inventory.turbo} · Magnet ${state.inventory.magnet}`;
+  elements.useNitro.classList.toggle("hidden", !(state.raceActive && state.inventory.nitro > 0));
 }
 
 function showMenuPanel(target) {
@@ -295,6 +319,20 @@ function showMenuPanel(target) {
 }
 
 function openControlPopup() {
+  state.preRaceChoices = { turbo: false, magnet: false };
+  const turboCount = state.inventory.turbo;
+  const magnetCount = state.inventory.magnet;
+  elements.preRaceOptions.innerHTML = `
+    <button data-powerup="turbo" ${turboCount < 1 ? "disabled" : ""}>Use Turbo Tires (${turboCount})</button>
+    <button data-powerup="magnet" ${magnetCount < 1 ? "disabled" : ""}>Use Coin Magnet (${magnetCount})</button>
+  `;
+  [...elements.preRaceOptions.querySelectorAll("button")].forEach((button) => {
+    button.addEventListener("click", () => {
+      const key = button.dataset.powerup;
+      state.preRaceChoices[key] = !state.preRaceChoices[key];
+      button.classList.toggle("active", state.preRaceChoices[key]);
+    });
+  });
   elements.controlPopup.classList.remove("hidden");
 }
 
@@ -304,6 +342,21 @@ function closeControlPopup() {
 
 function hideHomeMenu() {
   elements.homeMenu.classList.add("hidden");
+}
+
+function showHomeMenu() {
+  elements.homeMenu.classList.remove("hidden");
+  document.getElementById("garage").classList.add("hidden");
+  document.getElementById("settings").classList.add("hidden");
+  document.getElementById("shop").classList.add("hidden");
+}
+
+function useNitroNow() {
+  if (!state.raceActive || state.inventory.nitro < 1) return;
+  state.inventory.nitro -= 1;
+  state.activePowerups.push({ key: "nitro", duration: 8 });
+  state.usedThisRace.nitro = true;
+  updateHud(elements.position.textContent);
 }
 
 function populateResolutionOptions() {
@@ -377,23 +430,17 @@ function showResult(title, body) {
   elements.result.classList.remove("hidden");
 }
 
-function maybeUseAutoPowerups() {
+function applyChosenPreRacePowerups() {
   state.activePowerups = [];
   state.usedThisRace = { nitro: false, turbo: false, magnet: false };
 
-  if (state.inventory.nitro > 0) {
-    state.inventory.nitro -= 1;
-    state.activePowerups.push({ key: "nitro", duration: 8 });
-    state.usedThisRace.nitro = true;
-  }
-
-  if (state.inventory.turbo > 0) {
+  if (state.preRaceChoices.turbo && state.inventory.turbo > 0) {
     state.inventory.turbo -= 1;
     state.activePowerups.push({ key: "turbo", duration: RACE_DURATION });
     state.usedThisRace.turbo = true;
   }
 
-  if (state.inventory.magnet > 0) {
+  if (state.preRaceChoices.magnet && state.inventory.magnet > 0) {
     state.inventory.magnet -= 1;
     state.activePowerups.push({ key: "magnet", duration: RACE_DURATION });
     state.usedThisRace.magnet = true;
@@ -436,7 +483,7 @@ function startRace() {
   playerCar.position.x = 0;
   playerCar.position.z = 0;
   elements.result.classList.add("hidden");
-  maybeUseAutoPowerups();
+  applyChosenPreRacePowerups();
   updateHud(`1 / ${mode.bots + 1}`);
 }
 
@@ -458,7 +505,7 @@ function endRace() {
 
   showResult(
     place === 1 ? "🏁 You Won!" : `🏁 Finished #${place}`,
-    `You earned ${total} coins. ${state.usedThisRace.nitro || state.usedThisRace.turbo || state.usedThisRace.magnet ? "Powerups were used automatically." : "Buy powerups in the shop for the next race."}`
+    `You earned ${total} coins. ${state.usedThisRace.nitro || state.usedThisRace.turbo || state.usedThisRace.magnet ? "Powerups were used this race." : "Buy powerups in the shop for the next race."}`
   );
 
   updateHud(`${place} / ${mode.bots + 1}`);
@@ -502,10 +549,17 @@ window.addEventListener("keyup", (event) => {
 
 elements.startRace.addEventListener("click", openControlPopup);
 elements.mobileToggle.addEventListener("click", () => setMobileControls(!mobileEnabled));
+elements.useNitro.addEventListener("click", useNitroNow);
 bindHold(elements.mobileLeft, "left");
 bindHold(elements.mobileBoost, "accel");
 bindHold(elements.mobileRight, "right");
-elements.applySettings.addEventListener("click", applySettings);
+elements.applySettings.addEventListener("click", () => {
+  applySettings();
+  showHomeMenu();
+});
+elements.exitGarage.addEventListener("click", showHomeMenu);
+elements.exitSettings.addEventListener("click", showHomeMenu);
+elements.exitShop.addEventListener("click", showHomeMenu);
 
 elements.menuGarage.addEventListener("click", () => {
   hideHomeMenu();
@@ -521,6 +575,7 @@ elements.menuShop.addEventListener("click", () => {
 });
 elements.menuStart.addEventListener("click", () => {
   hideHomeMenu();
+  showMenuPanel("");
   openControlPopup();
 });
 elements.chooseMobile.addEventListener("click", () => {
@@ -535,7 +590,7 @@ elements.chooseKeyboard.addEventListener("click", () => {
 });
 
 elements.color.addEventListener("input", () => {
-  bodyMaterial.color.set(elements.color.value);
+  playerCar.userData.bodyMaterial.color.set(elements.color.value);
 });
 
 elements.shopButtons.forEach((button) => {
@@ -550,7 +605,7 @@ elements.shopButtons.forEach((button) => {
 
     state.coins -= cost;
     state.inventory[item] += 1;
-    showResult("Purchase complete", `Bought 1 ${item}. It will auto-activate in your next race.`);
+    showResult("Purchase complete", `Bought 1 ${item}. Select powerups in the pre-race popup or use Nitro during race.`);
     updateHud(elements.position.textContent);
   });
 });
