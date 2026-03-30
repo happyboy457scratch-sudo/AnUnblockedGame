@@ -72,9 +72,28 @@ body {
   width: 360px;
 }
 
+#use-nitro {
+  margin-top: 8px;
+  width: 100%;
+  height: 36px;
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  border: none;
+}
+
 #hud h1 {
   margin: 0 0 8px;
   font-size: 1.25rem;
+}
+
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-head h2 {
+  margin: 0 0 8px;
 }
 
 .hud-top {
@@ -147,9 +166,11 @@ body {
 }
 
 #settings {
-  top: 246px;
-  right: 12px;
-  width: 260px;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(360px, calc(100vw - 24px));
+  z-index: 6;
 }
 
 #shop {
@@ -227,6 +248,27 @@ body {
   text-align: center;
 }
 
+.pre-race-options {
+  text-align: left;
+  margin-bottom: 10px;
+  display: grid;
+  gap: 6px;
+}
+
+.pre-race-options button {
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(30, 41, 59, 0.9);
+  color: #e2e8f0;
+  border-radius: 8px;
+  padding: 8px;
+  cursor: pointer;
+}
+
+.pre-race-options button.active {
+  border-color: #22c55e;
+  box-shadow: 0 0 0 1px #22c55e inset;
+}
+
 @media (max-width: 760px) {
   #hud,
   #shop {
@@ -245,8 +287,7 @@ body {
   }
 
   #settings {
-    top: auto;
-    bottom: 168px;
+    width: calc(100vw - 24px);
   }
 
   #race-result {
